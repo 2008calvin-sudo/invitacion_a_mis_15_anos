@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#2a0610">
+<title>Mis XV Años · María de los Ángeles</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Great+Vibes&display=swap" rel="stylesheet">
+
+<style>
+  /* ============ PALETA ============ */
+  :root{
+    --wine:#5a0a1c;
+    --wine-deep:#2a0610;
+    --velvet:#7a0f26;
+    --gold:#e6c36a;
+    --gold-light:#fff0b8;
+    --gold-dark:#a9812c;
+    --cream:#f7ead2;
+    --gold-grad:linear-gradient(135deg,#fff0b8 0%,#e6c36a 35%,#a9812c 65%,#f3d98a 100%);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{height:100%;overflow:hidden;background:var(--wine-deep);color:var(--cream);
+    font-family:'Cormorant Garamond',Georgia,serif}
+  button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+
+  /* ============ FONDO: VIDEO + CAPAS ============ */
+  /* Video principal: se ve COMPLETO (contain). En pantallas anchas, una copia desenfocada rellena los lados. */
+  #bg{position:fixed;inset:0;width:100%;height:100%;object-fit:contain;z-index:0}
+  #bgBlur{position:fixed;inset:-6%;width:112%;height:112%;object-fit:cover;z-index:0;
+    filter:blur(7px) brightness(.72) saturate(1.1);   /* ► blur(7px): sube el número para difuminar más */
+    display:none}
+  @media (min-aspect-ratio:1/1){ #bgBlur{display:block} }
+  /* En móvil vertical el video casi llena la pantalla: se rellena sin zoom exagerado */
+  @media (max-aspect-ratio:3/5){ #bg{object-fit:cover} }
+  .veil{position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:radial-gradient(ellipse at center,rgba(20,0,8,.15) 0%,rgba(20,0,8,.55) 100%)}
+  #sparkles{position:fixed;inset:0;width:100%;height:100%;z-index:2;pointer-events:none}
+
+  /* ============ ESCENA ============ */
+  #stage{position:fixed;inset:0;z-index:3;overflow:hidden}
+
+  /* ---- Sobre: ocupa el ancho en móvil, máx. 540px en escritorio ---- */
+  .env{position:absolute;left:50%;top:50%;
+    height:min(94dvh,1000px);aspect-ratio:704/1526;
+    transform:translate(-50%,-50%);
+    transition:transform 2.6s cubic-bezier(.2,.7,.2,1),opacity 2.4s ease,filter 2.4s ease;
+    -webkit-mask-image:radial-gradient(ellipse 82% 68% at 50% 55%,#000 62%,transparent 100%);
+            mask-image:radial-gradient(ellipse 82% 68% at 50% 55%,#000 62%,transparent 100%);
+    animation:float 6s ease-in-out infinite}
+  @keyframes float{0%,100%{translate:0 0}50%{translate:0 -8px}}
+  .env img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+    user-select:none;-webkit-user-drag:none;transition:opacity 2.8s ease-in-out,transform 3.4s ease}
+  .env .img-open{opacity:0}
+  #stage.opening .img-closed{opacity:0;transform:scale(1.03)}
+  #stage.opening .img-open{opacity:1;transform:scale(1.03)}
+  #stage.opened .env{opacity:.28;filter:blur(3px) saturate(.9);transform:translate(-50%,-50%) scale(.92);animation:none}
+
+  /* ---- Botón del sello (coincide con el sello dorado de sobre_cerrado.jpg) ----
+       Ajusta left/top/width si cambias la imagen. Valores en % de la imagen. */
+  #seal{position:absolute;left:49%;top:54.7%;width:28%;aspect-ratio:1;
+    transform:translate(-50%,-50%);border-radius:50%;z-index:2;outline:none}
+  #seal::before,#seal::after{content:"";position:absolute;inset:0;border-radius:50%;
+    border:2px solid rgba(255,226,140,.9);box-shadow:0 0 18px 4px rgba(255,205,90,.55);
+    animation:pulse 2.4s ease-out infinite}
+  #seal::after{animation-delay:1.2s}
+  @keyframes pulse{0%{transform:scale(.85);opacity:.95}100%{transform:scale(1.55);opacity:0}}
+  #seal:focus-visible{box-shadow:0 0 0 3px var(--gold-light)}
+  #stage.opening #seal{pointer-events:none;opacity:0;transition:opacity .5s}
+
+  .hint{position:absolute;left:0;right:0;bottom:calc(5% + env(safe-area-inset-bottom));
+    text-align:center;z-index:4;pointer-events:none;
+    font-family:'Cinzel',serif;font-size:clamp(.8rem,3.4vw,1rem);letter-spacing:.28em;text-transform:uppercase;
+    color:var(--gold-light);text-shadow:0 0 12px rgba(230,195,106,.8),0 2px 6px #000;
+    animation:blink 2.4s ease-in-out infinite;transition:opacity .5s}
+  @keyframes blink{0%,100%{opacity:.55}50%{opacity:1}}
+  #stage.opening .hint{opacity:0;animation:none}
+
+  /* ============ TARJETA (carrusel) ============ */
+  .card{position:absolute;left:50%;top:50%;z-index:5;
+    width:min(92vw,450px);height:min(88dvh,800px);
+    transform:translate(-50%,-50%);
+    display:flex;flex-direction:column;border-radius:22px;overflow:hidden;
+    background:
+      radial-gradient(ellipse at top,rgba(150,25,50,.55),transparent 60%),
+      linear-gradient(180deg,rgba(78,8,24,.93),rgba(38,4,14,.96));
+    box-shadow:0 0 0 1px rgba(230,195,106,.65),0 0 0 6px rgba(42,6,16,.7),0 0 0 7px rgba(230,195,106,.35),
+      0 30px 80px rgba(0,0,0,.7),0 0 60px rgba(230,195,106,.18);
+    backdrop-filter:blur(6px)}
+  .card[hidden]{display:none}
+  .card.show{animation:rise 2.6s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes rise{
+    0%{opacity:0;transform:translate(-50%,-30%) scale(.5) rotateX(35deg)}
+    55%{opacity:1}
+    100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotateX(0)}}
+  /* Esquinas doradas */
+  .card::before,.card::after{content:"";position:absolute;width:54px;height:54px;z-index:3;pointer-events:none;
+    border:2px solid var(--gold);opacity:.85}
+  .card::before{top:12px;left:12px;border-right:0;border-bottom:0;border-radius:14px 0 0 0}
+  .card::after{bottom:60px;right:12px;border-left:0;border-top:0;border-radius:0 0 14px 0}
+
+  .track{flex:1;display:flex;overflow-x:auto;overflow-y:hidden;
+    scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;overscroll-behavior-x:contain}
+  .track::-webkit-scrollbar{display:none}
+  .slide{flex:0 0 100%;scroll-snap-align:center;scroll-snap-stop:always;
+    overflow-y:auto;scrollbar-width:none;padding:34px 26px 14px;
+    display:flex;flex-direction:column;align-items:center;text-align:center}
+  .slide::-webkit-scrollbar{display:none}
+
+  /* Tipografía */
+  .gold-text{background:var(--gold-grad);-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 1px 8px rgba(230,195,106,.35))}
+  .kicker{font-family:'Cinzel',serif;letter-spacing:.35em;text-transform:uppercase;font-size:.78rem;color:var(--gold)}
+  .script{font-family:'Great Vibes',cursive;font-weight:400;line-height:1.05}
+  .title{font-family:'Cinzel',serif;font-weight:600;letter-spacing:.12em;text-transform:uppercase;font-size:1.35rem}
+  .divider{display:flex;align-items:center;gap:10px;width:70%;margin:12px auto;color:var(--gold)}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+  .divider i{font-style:normal;font-size:.8rem}
+
+  /* Slide 1 */
+  .photo{position:relative;margin:14px 0 12px;height:min(40dvh,360px);width:auto;aspect-ratio:800/1308;flex:0 0 auto;border-radius:999px 999px 18px 18px;padding:4px;background:var(--gold-grad);
+    box-shadow:0 0 30px rgba(230,195,106,.35)}
+  .photo img{width:100%;height:100%;object-fit:cover;object-position:50% 100%;border-radius:inherit;display:block}
+  .name{font-size:clamp(2.1rem,9.5vw,2.8rem)}
+  .lead{font-size:1.15rem;font-style:italic;color:var(--cream);opacity:.92;margin-top:6px;max-width:30ch}
+
+  /* Slide 2 */
+  .details{width:100%;margin-top:6px;display:grid;gap:11px}
+  .row{display:flex;align-items:center;gap:14px;text-align:left;padding:11px 14px;border-radius:14px;
+    background:rgba(255,255,255,.04);border:1px solid rgba(230,195,106,.35)}
+  .row svg{flex:0 0 28px;width:28px;height:28px;stroke:var(--gold);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+  .row small{display:block;font-family:'Cinzel',serif;font-size:.66rem;letter-spacing:.25em;text-transform:uppercase;color:var(--gold)}
+  .row b{display:block;font-weight:600;font-size:1.25rem;line-height:1.15}
+  .row em{display:block;font-size:1rem;opacity:.85}
+  .actions{width:100%;display:grid;gap:10px;margin-top:16px}
+  .btn{display:flex;align-items:center;justify-content:center;gap:10px;padding:13px 16px;border-radius:999px;
+    font-family:'Cinzel',serif;font-weight:600;font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;
+    text-decoration:none;transition:transform .2s,box-shadow .2s}
+  .btn:active{transform:scale(.97)}
+  .btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .btn-gold{background:var(--gold-grad);color:#3a0714;box-shadow:0 4px 20px rgba(230,195,106,.35)}
+  .btn-ghost{border:1px solid var(--gold);color:var(--gold-light);background:rgba(230,195,106,.08)}
+  .btn:hover{box-shadow:0 0 24px rgba(230,195,106,.6)}
+
+  /* Slide 3 */
+  .gallery-main{position:relative;height:min(46dvh,340px);width:auto;aspect-ratio:3/4;flex:0 0 auto;margin:10px 0;border-radius:16px;padding:3px;
+    background:var(--gold-grad);box-shadow:0 0 28px rgba(230,195,106,.3);cursor:zoom-in}
+  .gallery-main img{position:absolute;inset:3px;width:calc(100% - 6px);height:calc(100% - 6px);object-fit:cover;border-radius:13px;
+    opacity:0;transition:opacity .6s}
+  .gallery-main img.on{opacity:1}
+  .thumbs{display:flex;gap:10px;justify-content:center}
+  .thumbs button{width:56px;height:74px;border-radius:10px;overflow:hidden;border:2px solid transparent;opacity:.6;transition:.25s}
+  .thumbs button.on{border-color:var(--gold);opacity:1;transform:translateY(-3px)}
+  .thumbs img{width:100%;height:100%;object-fit:cover;display:block}
+  .caption{margin-top:10px;font-style:italic;opacity:.85}
+
+  /* Navegación */
+  .nav{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:8px 16px 14px;position:relative;z-index:4}
+  .arrow{width:42px;height:42px;border-radius:50%;border:1px solid var(--gold);display:grid;place-items:center;
+    background:rgba(230,195,106,.08);transition:.2s}
+  .arrow svg{width:18px;height:18px;stroke:var(--gold-light);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .arrow:disabled{opacity:.25;cursor:default}
+  .arrow:not(:disabled):hover{background:rgba(230,195,106,.25)}
+  .dots{display:flex;gap:10px}
+  .dots button{width:10px;height:10px;border-radius:50%;background:rgba(230,195,106,.3);transition:.3s}
+  .dots button.on{width:26px;border-radius:6px;background:var(--gold-grad)}
+
+  /* Botón de sonido (música del video) */
+  .sound{position:fixed;top:calc(14px + env(safe-area-inset-top));right:14px;z-index:15;width:44px;height:44px;border-radius:50%;
+    border:1px solid var(--gold);background:rgba(42,6,16,.7);display:grid;place-items:center;backdrop-filter:blur(6px);
+    box-shadow:0 0 16px rgba(230,195,106,.3);transition:background .2s}
+  .sound:hover{background:rgba(122,15,38,.8)}
+  .sound svg{width:20px;height:20px;stroke:var(--gold-light);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .sound .off{display:none}
+  .sound.muted .on{display:none}.sound.muted .off{display:block}
+
+
+  /* ===== ESCRITORIO / PANTALLA ANCHA: video completo a la izquierda, tarjeta a la derecha ===== */
+  @media (min-aspect-ratio:1/1) and (min-width:820px){
+    #bg{object-fit:contain;object-position:27% 50%}   /* ► cambia 27% para mover el video (0% = izquierda, 50% = centro) */
+    /* El sobre se queda al centro y SIN video. El video (a la izquierda) aparece al abrirse la invitación. */
+    #bg,#bgBlur{opacity:0;transition:opacity 2.8s ease}
+    body.opened #bg,body.opened #bgBlur{opacity:1}
+    body{background:radial-gradient(ellipse at center,#5a0a1c 0%,#2a0610 55%,#14030a 100%)}
+    .card{left:73%}                                   /* ► posición horizontal de la tarjeta */
+    #stage.opened .env{opacity:0}                     /* el sobre se desvanece al subir la tarjeta */
+  }
+
+
+  /* ============ BIENVENIDA (antes del sobre) ============ */
+  #intro{position:absolute;inset:0;z-index:8;display:flex;flex-direction:column;align-items:center;justify-content:center;
+    text-align:center;padding:0 24px;cursor:pointer}
+  #intro.out{opacity:0;transition:opacity 1.1s ease;pointer-events:none}
+  #intro > *{opacity:0;animation:inFade 1.6s ease forwards}
+  .in-kicker{font-family:'Cinzel',serif;font-size:clamp(.9rem,3.6vw,1.35rem);letter-spacing:.42em;text-transform:uppercase;
+    color:var(--gold-light);text-shadow:0 0 16px rgba(230,195,106,.7);animation-delay:.5s!important}
+  .in-title{font-family:'Great Vibes',cursive;font-weight:400;line-height:1.05;margin:.1em 0 0;
+    font-size:clamp(3.4rem,min(23vw,24vh),9rem);
+    background:linear-gradient(100deg,#a9812c 0%,#fff0b8 30%,#e6c36a 50%,#fff0b8 70%,#a9812c 100%);background-size:220% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 2px 18px rgba(230,195,106,.45));
+    animation:inTitle 2.2s cubic-bezier(.2,.7,.2,1) 1.2s forwards,shimmer 5s linear 1.2s infinite!important}
+  .in-line{display:flex;align-items:center;gap:12px;width:min(60vw,320px);color:var(--gold);animation-delay:2.4s!important}
+  .in-line::before,.in-line::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+  .in-line i{font-style:normal}
+  .in-sub{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:clamp(1.4rem,6vw,2.2rem);margin-top:.4em;
+    color:var(--cream);text-shadow:0 0 14px rgba(230,195,106,.55);animation-delay:2.8s!important}
+  @keyframes inFade{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @keyframes inTitle{from{opacity:0;transform:scale(.88);filter:blur(14px) drop-shadow(0 0 0 transparent)}
+                     to{opacity:1;transform:scale(1);filter:blur(0) drop-shadow(0 2px 18px rgba(230,195,106,.45))}}
+  @keyframes shimmer{from{background-position:0 0}to{background-position:-220% 0}}
+
+  /* Mientras dura la bienvenida, el sobre y su texto esperan escondidos */
+  #stage.intro .env{opacity:0;pointer-events:none}
+  #stage.intro .hint{animation:none;opacity:0}
+
+  /* Lightbox */
+  .lightbox{position:fixed;inset:0;z-index:20;background:rgba(15,0,6,.92);display:grid;place-items:center;
+    opacity:0;pointer-events:none;transition:opacity .3s}
+  .lightbox.on{opacity:1;pointer-events:auto}
+  .lightbox img{max-width:92vw;max-height:90dvh;border-radius:12px;border:2px solid var(--gold);box-shadow:0 0 50px rgba(230,195,106,.35)}
+
+  @media (max-height:820px){ .photo{height:38dvh;margin:10px 0 8px} .slide{padding-top:26px} }
+  @media (max-height:640px){
+    .slide{padding-top:24px}
+    .photo{height:30dvh}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  }
+
+  /* ===== CELULAR EN HORIZONTAL (pantalla baja): tarjeta más grande y contenido en 2 columnas ===== */
+  @media (orientation:landscape) and (max-height:520px){
+    .card{width:min(94vw,680px);height:94dvh;border-radius:18px}
+    .card::before,.card::after{width:34px;height:34px}
+    .slide{padding:14px 22px 4px;justify-content:center}
+    .sound{right:auto;left:12px;width:38px;height:38px}
+    .kicker{font-size:.62rem;letter-spacing:.26em}
+    .title{font-size:1.05rem}
+    .divider{margin:5px auto;width:50%}
+    .nav{padding:4px 14px 8px}.arrow{width:34px;height:34px}
+
+    /* Sección 1: foto a la izquierda, texto a la derecha */
+    .slide:nth-child(1){display:grid;grid-template-columns:auto 1fr;column-gap:22px;align-content:center;justify-items:center}
+    .slide:nth-child(1) > *{grid-column:2}
+    .slide:nth-child(1) > .photo{grid-column:1;grid-row:1/7;height:min(70dvh,270px);margin:0;align-self:center}
+    .slide:nth-child(1) h1{font-size:2.3rem!important;margin-top:2px!important}
+    .name{font-size:1.9rem}
+    .lead{font-size:.95rem;margin-top:2px}
+
+    /* Sección 2: detalles en 2 columnas */
+    .details{grid-template-columns:1fr 1fr;gap:7px;margin-top:2px}
+    .row{padding:6px 11px;gap:10px;border-radius:11px}
+    .row svg{flex-basis:20px;width:20px;height:20px}
+    .row small{font-size:.54rem}.row b{font-size:1rem}.row em{font-size:.82rem}
+    .actions{grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}
+    .btn{padding:9px 8px;font-size:.62rem;letter-spacing:.08em}
+
+    /* Sección 3: foto grande a la izquierda, miniaturas a la derecha */
+    .slide:nth-child(3){display:grid;grid-template-columns:auto 1fr;column-gap:24px;align-content:center;justify-items:center}
+    .slide:nth-child(3) > *{grid-column:2}
+    .slide:nth-child(3) > .gallery-main{grid-column:1;grid-row:1/7;height:min(72dvh,285px);margin:0;align-self:center}
+    .slide:nth-child(3) .divider,.slide:nth-child(3) .caption{display:none}
+    .thumbs{margin-top:8px}
+    .thumbs button{width:48px;height:64px}
+    .lightbox img{max-height:96dvh}
+  }
+  /* Si además es ancha (≥820px), la tarjeta va a la derecha, junto al video */
+  @media (orientation:landscape) and (max-height:520px) and (min-width:820px){
+    .card{left:67%;width:min(64vw,680px)}
+  }
+</style>
+</head>
+<body>
+
+<!-- VIDEO DE FONDO ► reemplaza "media/video_fondo.mp4" por tu video -->
+<!-- MÚSICA ► reemplaza "media/musica.mp3" por tu canción. Empieza al tocar el sello. -->
+<audio id="music" src="media/musica.mp3" loop preload="auto"></audio>
+<video id="bgBlur" src="media/video_fondo.mp4" muted playsinline preload="auto" aria-hidden="true"></video>
+<video id="bg" src="media/video_fondo.mp4" muted playsinline preload="auto"></video>
+<div class="veil"></div>
+<canvas id="sparkles"></canvas>
+
+<main id="stage" class="intro">
+
+  <!-- PANTALLA DE BIENVENIDA (letras doradas) ► edita los textos aquí -->
+  <div id="intro" aria-label="Te invito a mis 15 años, Una Noche Mágica">
+    <p class="in-kicker">Te invito a mis</p>
+    <h1 class="in-title">15 Años</h1>
+    <div class="in-line"><i>✦</i></div>
+    <p class="in-sub">Una Noche Mágica</p>
+  </div>
+
+  <!-- PANTALLA INICIAL: SOBRE -->
+  <div class="env" id="envelope">
+    <!-- ► reemplaza por tus imágenes del sobre -->
+    <img class="img-closed" src="media/sobre_cerrado.jpg" alt="Sobre de terciopelo cerrado con sello dorado" draggable="false">
+    <img class="img-open"   src="media/sobre_abierto.jpg" alt="Sobre abierto con la invitación" draggable="false">
+    <button id="seal" aria-label="Haz clic en el sello para abrir la invitación"></button>
+  </div>
+  <p class="hint" id="hint">Haz clic para abrir</p>
+
+  <!-- TARJETA INTERACTIVA (aparece al abrir) -->
+  <section class="card" id="card" hidden aria-label="Invitación">
+    <div class="track" id="track">
+
+      <!-- SECCIÓN 1 · BIENVENIDA -->
+      <article class="slide">
+        <p class="kicker">Estás cordialmente invitado a</p>
+        <h1 class="script gold-text" style="font-size:3.4rem;margin-top:6px">Mis XV Años</h1>
+        <div class="photo">
+          <!-- ► reemplaza por la foto de la quinceañera -->
+          <img src="media/quinceanera.jpg" alt="María de los Ángeles González, quinceañera">
+        </div>
+        <h2 class="script gold-text name">María de los Ángeles González</h2>
+        <p class="lead">Acompáñame en una velada mágica en el bosque encantado.</p>
+        <p class="kicker" style="margin-top:14px;font-size:.66rem;opacity:.8">Desliza ›</p>
+      </article>
+
+      <!-- SECCIÓN 2 · DETALLES -->
+      <article class="slide">
+        <p class="kicker">Velada mágica</p>
+        <h2 class="title gold-text" style="margin-top:6px">Detalles del evento</h2>
+        <div class="divider"><i>✦</i></div>
+
+        <div class="details">
+          <div class="row">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.2"/><path d="M5.5 20c.6-3.6 3.2-5.6 6.5-5.6s5.9 2 6.5 5.6"/></svg>
+            <div><small>Padre</small><b>Juan González</b><em>y sus padrinos</em></div>
+          </div>
+          <div class="row">
+            <svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
+            <!-- ► CAMBIA LA FECHA en CONFIG (abajo, en el script) -->
+            <div><small>Fecha</small><b id="fecha">—</b></div>
+          </div>
+          <div class="row">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5l3.2 2"/></svg>
+            <div><small>Hora</small><b id="hora">—</b></div>
+          </div>
+          <div class="row">
+            <svg viewBox="0 0 24 24"><path d="M12 21s-6.5-5.8-6.5-11A6.5 6.5 0 0 1 12 3.5 6.5 6.5 0 0 1 18.5 10c0 5.2-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>
+            <div><small>Lugar</small><b id="lugar">—</b></div>
+          </div>
+        </div>
+
+        <div class="actions">
+          <a class="btn btn-ghost" id="btnMapa" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M9 4 3.5 6v14L9 18l6 2 5.5-2V4L15 6 9 4zM9 4v14M15 6v14"/></svg>Ver en Google Maps
+          </a>
+          <a class="btn btn-gold" id="btnWsp" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24"><path d="M4 20l1.3-4.2A8 8 0 1 1 8.4 18.8L4 20z"/><path d="M9.5 9c.3 2.6 2.4 4.7 5 5l1-1.3-1.8-.9-.8.6a4 4 0 0 1-1.7-1.7l.6-.8-.9-1.8L9.5 9z"/></svg>Confirmar asistencia
+          </a>
+        </div>
+      </article>
+
+      <!-- SECCIÓN 3 · GALERÍA -->
+      <article class="slide">
+        <p class="kicker">Recuerdos</p>
+        <h2 class="title gold-text" style="margin-top:6px">Galería</h2>
+        <div class="divider"><i>✦</i></div>
+        <!-- ► añade más imágenes agregando entradas a GALLERY en el script -->
+        <div class="gallery-main" id="galMain" role="button" aria-label="Ampliar imagen"></div>
+        <div class="thumbs" id="thumbs"></div>
+        <p class="caption">Toca la imagen para ampliarla</p>
+      </article>
+
+    </div>
+
+    <nav class="nav">
+      <button class="arrow" id="prev" aria-label="Anterior"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="dots" id="dots"></div>
+      <button class="arrow" id="next" aria-label="Siguiente"><svg viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg></button>
+    </nav>
+  </section>
+</main>
+
+<!-- Botón para silenciar / activar el sonido del video -->
+<button class="sound muted" id="sound" aria-label="Activar o silenciar música">
+  <svg class="on" viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>
+  <svg class="off" viewBox="0 0 24 24"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"/><path d="M16 9.5l5 5M21 9.5l-5 5"/></svg>
+</button>
+
+<div class="lightbox" id="lightbox"><img alt=""></div>
+
+<script>
+/* ============ CONFIGURACIÓN · EDITA AQUÍ ============ */
+const CONFIG = {
+  fecha:  '19 de Diciembre de 2026',               // ► escribe la fecha real, ej: 'Sábado 21 de Noviembre'
+  hora:   '7:30 PM',
+  lugar:  'Colegio Médico',
+  // ► pega el enlace exacto de Google Maps del salón
+  mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Colegio+Medico+del+Estado+Guarico+San+Juan+de+los+Morros' + encodeURIComponent('Colegio Médico'),
+  // ► número con código de país y sin "+" ni espacios (Argentina: 549 + código de área + número)
+  whatsapp: '+584123436697',
+  mensaje:  'Hola! Confirmo mi asistencia a los XV años de María de los Ángeles González 💃✨'
+};
+// ► imágenes de la galería
+const GALLERY = [
+  'media/quinceanera.jpg',
+  'media/sobre_cerrado.jpg',
+  'media/sobre_abierto.jpg'
+];
+
+/* ============ UTILIDADES ============ */
+const $ = s => document.querySelector(s);
+const stage = $('#stage'), card = $('#card'), track = $('#track'), video = $('#bg');
+const slides = [...track.children];
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* Texto de detalles */
+$('#fecha').textContent = CONFIG.fecha;
+$('#hora').textContent  = CONFIG.hora;
+$('#lugar').textContent = CONFIG.lugar;
+$('#btnMapa').href = CONFIG.mapsUrl;
+$('#btnWsp').href  = `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(CONFIG.mensaje)}`;
+
+/* ============ MÚSICA ============
+   Los videos siempre van en silencio. La canción (media/musica.mp3) empieza al tocar el sello;
+   el botón superior la silencia / activa. */
+let opened = false;
+const soundBtn = $('#sound'), music = $('#music');
+music.volume = 0.8;                                 // ► volumen de 0 a 1
+let soundOn = true;
+soundBtn.classList.remove('muted');
+
+/* ► SEGUNDO DEL VIDEO donde empieza (y donde vuelve a empezar en cada bucle).
+     Antes de tocar el sello, el video queda detenido en este punto. */
+const START_TIME = 3.5;
+const blurVideo = $('#bgBlur');
+[video, blurVideo].forEach(v => {
+  v.muted = true;
+  const cue = () => { try { v.currentTime = START_TIME; } catch(e){} };
+  v.readyState >= 1 ? cue() : v.addEventListener('loadedmetadata', cue, {once:true});
+  v.addEventListener('ended', () => { v.currentTime = START_TIME; v.play().catch(()=>{}); });  // bucle desde START_TIME
+});
+
+function setSound(on){
+  soundOn = on; music.muted = !on;
+  soundBtn.classList.toggle('muted', !on);
+  if (opened && on && music.paused) music.play().catch(()=>{});
+}
+soundBtn.addEventListener('click', () => setSound(!soundOn));
+
+
+/* ============ BIENVENIDA ============ */
+const intro = $('#intro');
+let introDone = false;
+function endIntro(){
+  if (introDone) return; introDone = true;
+  intro.classList.add('out');
+  setTimeout(() => stage.classList.remove('intro'), reduce ? 100 : 700);   // aparece el sobre
+  setTimeout(() => intro.remove(), 2000);
+}
+setTimeout(endIntro, reduce ? 1500 : 6000);       // ► duración de la bienvenida (ms); también se salta con un toque
+intro.addEventListener('click', endIntro);
+
+/* ============ APERTURA DEL SOBRE ============ */
+function openEnvelope(){
+  if (opened) return; opened = true;
+  music.currentTime = 0; music.play().catch(()=>{});   // la canción empieza aquí
+  if (!matchMedia('(min-aspect-ratio:1/1) and (min-width:820px)').matches){   // celular: el video arranca ya;
+    video.play().catch(()=>{}); blurVideo.play().catch(()=>{});               // en pantalla ancha arranca al subir la tarjeta
+  }
+  const r = $('#seal').getBoundingClientRect();
+  burst(r.left + r.width/2, r.top + r.height/2);    // destellos dorados desde el sello
+  stage.classList.add('opening');                   // fade sobre cerrado → abierto
+  setTimeout(() => {                                // la tarjeta se eleva desde el sobre
+    stage.classList.add('opened');
+    document.body.classList.add('opened');           // en pantalla ancha: aparece el video a la izquierda
+    video.play().catch(()=>{}); blurVideo.play().catch(()=>{});   // y empieza desde START_TIME
+    card.hidden = false; card.classList.add('show'); sync();
+    burst(innerWidth/2, innerHeight/2, 40);
+  }, reduce ? 100 : 3400);   // ► espera (ms) antes de que suba la tarjeta
+}
+$('#seal').addEventListener('click', openEnvelope);
+
+/* ============ CARRUSEL ============ */
+const dots = $('#dots'), prev = $('#prev'), next = $('#next');
+slides.forEach((_, i) => {
+  const b = document.createElement('button');
+  b.setAttribute('aria-label', 'Ir a la sección ' + (i+1));
+  b.onclick = () => go(i);
+  dots.appendChild(b);
+});
+let idx = 0;
+function go(i){
+  idx = Math.max(0, Math.min(slides.length-1, i));
+  track.scrollTo({left: idx * track.clientWidth, behavior: reduce ? 'auto' : 'smooth'});
+}
+function sync(){
+  if (!track.clientWidth) return;                   // tarjeta aún oculta
+  idx = Math.round(track.scrollLeft / track.clientWidth);
+  [...dots.children].forEach((d,i) => d.classList.toggle('on', i === idx));
+  prev.disabled = idx === 0; next.disabled = idx === slides.length-1;
+}
+track.addEventListener('scroll', sync, {passive:true});
+prev.onclick = () => go(idx-1); next.onclick = () => go(idx+1);
+addEventListener('keydown', e => {
+  if (card.hidden) { if (e.key==='Enter'||e.key===' ') openEnvelope(); return; }
+  if (e.key==='ArrowRight') go(idx+1);
+  if (e.key==='ArrowLeft')  go(idx-1);
+  if (e.key==='Escape') $('#lightbox').classList.remove('on');
+});
+addEventListener('resize', () => track.scrollTo({left: idx*track.clientWidth, behavior:'auto'}));
+sync();
+
+/* Arrastre con mouse en escritorio (en móvil ya funciona el swipe táctil) */
+let drag = null;
+track.addEventListener('pointerdown', e => { if (e.pointerType==='mouse') drag = {x:e.clientX, s:track.scrollLeft}; });
+addEventListener('pointerup', e => {
+  if (!drag) return; const dx = e.clientX - drag.x; drag = null;
+  if (Math.abs(dx) > 50) go(idx + (dx < 0 ? 1 : -1));
+});
+
+/* ============ GALERÍA ============ */
+const galMain = $('#galMain'), thumbs = $('#thumbs'), lb = $('#lightbox');
+GALLERY.forEach((src, i) => {
+  const im = document.createElement('img'); im.src = src; im.alt = 'Foto ' + (i+1); galMain.appendChild(im);
+  const b = document.createElement('button'); b.innerHTML = `<img src="${src}" alt="">`;
+  b.onclick = () => showPhoto(i); thumbs.appendChild(b);
+});
+let photo = 0;
+function showPhoto(i){
+  photo = i;
+  [...galMain.children].forEach((im,k) => im.classList.toggle('on', k===i));
+  [...thumbs.children].forEach((b,k) => b.classList.toggle('on', k===i));
+}
+showPhoto(0);
+galMain.onclick = () => { lb.querySelector('img').src = GALLERY[photo]; lb.classList.add('on'); };
+lb.onclick = () => lb.classList.remove('on');
+
+/* ============ DESTELLOS MÁGICOS (canvas) ============ */
+const cv = $('#sparkles'), ctx = cv.getContext('2d');
+let W, H, parts = [];
+function size(){ const d = devicePixelRatio||1; W = cv.width = innerWidth*d; H = cv.height = innerHeight*d; ctx.setTransform(d,0,0,d,0,0); }
+addEventListener('resize', size); size();
+const GOLDS = ['255,240,184','230,195,106','255,214,120'];
+function ambient(){
+  return { x:Math.random()*innerWidth, y:innerHeight+10, vx:(Math.random()-.5)*.3, vy:-(.2+Math.random()*.6),
+           r:.8+Math.random()*2, life:1, decay:.0015+Math.random()*.002, c:GOLDS[(Math.random()*3)|0], tw:Math.random()*6 };
+}
+function burst(x, y, n = 28){
+  if (reduce) return;
+  for (let i=0;i<n;i++){
+    const a = Math.random()*Math.PI*2, s = 1+Math.random()*3.5;
+    parts.push({x, y, vx:Math.cos(a)*s, vy:Math.sin(a)*s-.5, r:1+Math.random()*2.6, life:1,
+                decay:.012+Math.random()*.014, c:GOLDS[(Math.random()*3)|0], tw:Math.random()*6, burst:true});
+  }
+}
+function tick(t){
+  ctx.clearRect(0,0,innerWidth,innerHeight);
+  if (!reduce && parts.length < 70 && Math.random() < .35) parts.push(ambient());
+  parts = parts.filter(p => p.life > 0 && p.y > -20);
+  for (const p of parts){
+    p.x += p.vx; p.y += p.vy; p.life -= p.decay;
+    if (p.burst){ p.vx *= .97; p.vy = p.vy*.97 + .02; }
+    const a = Math.max(0,p.life) * (.55 + .45*Math.sin(t/180 + p.tw));
+    const g = ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
+    g.addColorStop(0,`rgba(${p.c},${a})`); g.addColorStop(1,`rgba(${p.c},0)`);
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(p.x,p.y,p.r*4,0,6.283); ctx.fill();
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>
