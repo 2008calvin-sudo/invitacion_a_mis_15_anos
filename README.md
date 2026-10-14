@@ -24,7 +24,7 @@ Abre `index.html` con doble clic en Chrome, Firefox, Edge o Safari. Mantén la c
 
 ## ✨ Cómo funciona
 
-1. **Bienvenida:** letras doradas que aparecen en secuencia — "Bienvenido a mis **15 Años**, una noche mágica". Dura unos 6 segundos y se puede saltar con un toque.
+1. **Bienvenida:** letras doradas que aparecen en secuencia — "Te Invito a mis **15 Años**, una noche mágica". Dura unos 6 segundos y se puede saltar con un toque.
 2. **Sobre cerrado** al centro con un botón pulsante sobre el sello dorado ("Haz clic para abrir").
 3. Al tocar el sello: destellos dorados, el sobre cerrado se funde con el sobre abierto, **empieza la canción** y después sube la tarjeta.
 4. **Tarjeta con 3 secciones** (desliza, usa las flechas, los puntos o el teclado ← →):
